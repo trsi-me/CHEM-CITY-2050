@@ -1,4 +1,5 @@
 import os
+from urllib.parse import unquote, urlparse
 
 import pymysql
 from pymysql import err as pymysql_err
@@ -38,12 +39,29 @@ class DbConn:
     def close(self):
         self._raw.close()
 
+def _from_url(raw):
+    parsed = urlparse(raw)
+    if parsed.scheme not in ("mysql", "mysql2"):
+        return None
+    host = parsed.hostname or ""
+    port = parsed.port or 3306
+    user = unquote(parsed.username or "")
+    password = unquote(parsed.password or "")
+    database = (parsed.path or "").lstrip("/")
+    if not host or not user or not database:
+        return None
+    return host, int(port), user, password, database
+
 def mysql_params():
-    host = os.environ.get("DB_HOST", "127.0.0.1").strip() or "127.0.0.1"
-    port = int(os.environ.get("DB_PORT", "3306").strip() or "3306")
-    user = os.environ.get("DB_USER", "").strip()
-    password = os.environ.get("DB_PASSWORD", "")
-    database = os.environ.get("DB_NAME", "").strip()
+    for key in ("MYSQL_URL", "DATABASE_URL", "MYSQL_PUBLIC_URL"):
+        hit = _from_url(os.environ.get(key, "").strip())
+        if hit:
+            return hit
+    host = (os.environ.get("DB_HOST") or os.environ.get("MYSQLHOST") or "127.0.0.1").strip() or "127.0.0.1"
+    port = int((os.environ.get("DB_PORT") or os.environ.get("MYSQLPORT") or "3306").strip() or "3306")
+    user = (os.environ.get("DB_USER") or os.environ.get("MYSQLUSER") or "").strip()
+    password = os.environ.get("DB_PASSWORD") or os.environ.get("MYSQLPASSWORD") or ""
+    database = (os.environ.get("DB_NAME") or os.environ.get("MYSQLDATABASE") or "").strip()
     return host, port, user, password, database
 
 def open_mysql():
