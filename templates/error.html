@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} | CHEM CITY 2050{% endblock %}
+{% block body %}
+{% include "topbar.html" %}
+<main id="main" class="wrap wrap-simple">
+<section class="verdict">
+<h1>{{ title }}</h1>
+<p class="lede">{{ text }}</p>
+<a class="btn" href="{{ url_for('home') }}">ارجعي إلى المدينة</a>
+</section>
+</main>
+{% endblock %}

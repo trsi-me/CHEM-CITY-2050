@@ -1,0 +1,21 @@
+<header class="topbar">
+<a class="logo" href="{{ url_for('home') }}">CHEM CITY <span>2050</span></a>
+<nav class="topnav" aria-label="حساب المستخدم">
+<button type="button" class="sound-btn" id="soundToggle" aria-pressed="true">الصوت: تشغيل</button>
+{% if page and page != 'home' %}
+<a href="{{ url_for('home') }}">الرئيسية</a>
+{% endif %}
+{% if nav_user %}
+<a href="{{ url_for('account') }}">حسابي</a>
+<a href="{{ url_for('missions') }}">مهامي</a>
+<span class="leader">{{ nav_user.display_name }}</span>
+<form class="nav-logout" method="post" action="{{ url_for('logout') }}">
+<input type="hidden" name="csrf" value="{{ csrf }}">
+<button class="link-btn" type="submit">خروج</button>
+</form>
+{% else %}
+<a href="{{ url_for('login') }}">دخول</a>
+<a class="btn btn-small" href="{{ url_for('register') }}">حساب جديد</a>
+{% endif %}
+</nav>
+</header>

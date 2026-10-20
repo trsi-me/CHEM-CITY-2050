@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% from "macros.html" import money %}
+{% block title %}تقرير الإنقاذ | CHEM CITY 2050{% endblock %}
+{% block body %}
+{% include "topbar.html" %}
+<div class="subhead">
+<p class="leader">{{ city.leader }}</p>
+<ol class="steps" aria-label="مراحل الإنقاذ">
+{% for item in steps %}
+<li class="is-done">{{ item.name }}</li>
+{% endfor %}
+</ol>
+</div>
+<main id="main" class="wrap">
+<section class="verdict verdict-{{ verdict_key }}">
+<p class="eyebrow">التقرير الختامي</p>
+<h1>{{ verdict_title }}</h1>
+<p class="lede">{{ verdict_text }}</p>
+<p class="kpi-num" aria-label="مؤشر الاستدامة النهائي">{{ score }}</p>
+<p class="muted">{{ city.leader }} · <time datetime="{{ city.created_at }}">{{ city.created_at|ksa }}</time></p>
+<p class="pulse">{{ pulse }}</p>
+</section>
+<section class="compare" aria-label="مقارنة المؤشرات">
+<h2>قبل القرارات وبعدها</h2>
+<div class="cmp-row">
+<h3>جودة المياه</h3>
+<p>قبل {{ city.start_water }}</p>
+<div class="track" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ city.start_water }}" aria-label="المياه قبل" data-meter data-from="{{ city.start_water }}" data-to="{{ city.start_water }}"><span class="bar bar-dim"></span></div>
+<p>بعد {{ city.water }}</p>
+<div class="track" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ city.water }}" aria-label="المياه بعد" data-meter data-from="{{ city.start_water }}" data-to="{{ city.water }}"><span class="bar bar-water"></span></div>
+</div>
+<div class="cmp-row">
+<h3>جودة الهواء</h3>
+<p>قبل {{ city.start_air }}</p>
+<div class="track" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ city.start_air }}" aria-label="الهواء قبل" data-meter data-from="{{ city.start_air }}" data-to="{{ city.start_air }}"><span class="bar bar-dim"></span></div>
+<p>بعد {{ city.air }}</p>
+<div class="track" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ city.air }}" aria-label="الهواء بعد" data-meter data-from="{{ city.start_air }}" data-to="{{ city.air }}"><span class="bar bar-air"></span></div>
+</div>
+<div class="cmp-row">
+<h3>استدامة الطاقة</h3>
+<p>قبل {{ city.start_energy }}</p>
+<div class="track" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ city.start_energy }}" aria-label="الطاقة قبل" data-meter data-from="{{ city.start_energy }}" data-to="{{ city.start_energy }}"><span class="bar bar-dim"></span></div>
+<p>بعد {{ city.energy }}</p>
+<div class="track" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ city.energy }}" aria-label="الطاقة بعد" data-meter data-from="{{ city.start_energy }}" data-to="{{ city.energy }}"><span class="bar bar-energy"></span></div>
+</div>
+<div class="cmp-row">
+<h3>الاستدامة العامة</h3>
+<p>قبل {{ before_score }}</p>
+<div class="track" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ before_score }}" aria-label="الاستدامة قبل" data-meter data-from="{{ before_score }}" data-to="{{ before_score }}"><span class="bar bar-dim"></span></div>
+<p>بعد {{ score }}</p>
+<div class="track" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ score }}" aria-label="الاستدامة بعد" data-meter data-from="{{ before_score }}" data-to="{{ score }}"><span class="bar bar-score"></span></div>
+</div>
+</section>
+<section class="budget-block">
+<h2>الميزانية</h2>
+<p>المستخدم {{ money(used) }}</p>
+<p>المتبقي {{ money(city.budget) }}</p>
+<p class="muted">أسئلة الكيمياء: {{ hits }} من 3</p>
+</section>
+<section>
+<h2>القرارات</h2>
+<ol class="timeline">
+{% for item in decisions %}
+<li>
+<p class="eyebrow">مرحلة {{ item.stage_name }}</p>
+<h3>{{ item.choice_title }}</h3>
+{% if item.equation %}<p class="eq" dir="ltr">{{ item.equation }}</p>{% endif %}
+<p>{{ item.explanation }}</p>
+<p class="quiz-note">{{ item.quiz_note }}</p>
+<p>{{ money(item.cost) }}</p>
+</li>
+{% endfor %}
+</ol>
+</section>
+<section>
+<h2>المفاهيم</h2>
+<ul class="chips">
+{% for item in got %}<li>{{ item }}</li>{% endfor %}
+</ul>
+{% if missed %}
+<h3>بقيت بحاجة مراجعة</h3>
+<ul class="chips chips-miss">
+{% for item in missed %}<li>{{ item }}</li>{% endfor %}
+</ul>
+{% endif %}
+</section>
+<section>
+<h2>توصيات</h2>
+<ol class="tips">
+{% for tip in tips %}<li>{{ tip }}</li>{% endfor %}
+</ol>
+<p class="vision">حماية البيئة، والاستخدام المستدام للموارد، وجودة الحياة: هذا ما تربطه الخطة برؤية 2030.</p>
+</section>
+<div class="actions">
+<button class="btn print" type="button">اطبعي التقرير</button>
+<a class="btn btn-ghost" href="{{ url_for('home') }}">جرّبي قرارات أخرى</a>
+</div>
+</main>
+{% endblock %}

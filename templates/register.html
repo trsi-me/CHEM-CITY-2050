@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}حساب جديد | CHEM CITY 2050{% endblock %}
+{% block body %}
+{% include "topbar.html" %}
+<main id="main" class="wrap wrap-simple">
+<section class="auth-card">
+<h1>إنشاء حساب</h1>
+<p class="lede">تُحفظ مهامك وتقاريرك على حسابك</p>
+{% if error %}<p class="form-error" role="alert">{{ error }}</p>{% endif %}
+<form class="auth-form" method="post" action="{{ url_for('register') }}">
+<input type="hidden" name="csrf" value="{{ csrf }}">
+<label for="username">اسم المستخدم</label>
+<input id="username" name="username" type="text" required minlength="3" maxlength="30" pattern="[A-Za-z0-9_.]{3,30}" autocomplete="username" autofocus>
+<label for="display_name">اسم قائدة المدينة في اللعبة</label>
+<input id="display_name" name="display_name" type="text" maxlength="40" autocomplete="name">
+<label for="email">البريد (اختياري)</label>
+<input id="email" name="email" type="email" maxlength="80" autocomplete="email">
+<label for="phone">رقم الجوال (اختياري)</label>
+<input id="phone" name="phone" type="tel" maxlength="20" autocomplete="tel" inputmode="numeric">
+<label for="password">كلمة السر</label>
+<div class="pass-wrap">
+<input id="password" name="password" type="password" required minlength="8" maxlength="128" autocomplete="new-password">
+<button class="pass-toggle" type="button" data-pass-toggle aria-label="إظهار كلمة السر">إظهار</button>
+</div>
+<p class="hint">8 أحرف على الأقل</p>
+<label for="password2">تأكيد كلمة السر</label>
+<input id="password2" name="password2" type="password" required minlength="8" maxlength="128" autocomplete="new-password">
+<button class="btn" type="submit">إنشاء الحساب</button>
+</form>
+<p class="muted">عندك حساب؟ <a href="{{ url_for('login') }}">دخول</a></p>
+</section>
+</main>
+{% endblock %}

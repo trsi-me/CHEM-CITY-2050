@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}CHEM CITY 2050{% endblock %}
+{% block body %}
+{% include "topbar.html" %}
+<main id="main" class="landing landing-hero">
+<div class="hero-bg" aria-hidden="true">
+<img src="{{ url_for('static', filename='images/hero-bg.jpg') }}" alt="" width="1920" height="1080" decoding="async" fetchpriority="high">
+</div>
+<section class="hero">
+<div class="hero-copy">
+<h1>مدينة على حافة الانهيار</h1>
+<p class="lede">الخزان يحمل رصاصًا مذابًا، والمداخن تطلق ثاني أكسيد الكبريت، والليل يبتلع ما تبقى من الطاقة.</p>
+<p class="vision">معالجة الماء والهواء والطاقة هنا تخدم حماية البيئة وجودة الحياة في رؤية 2030.</p>
+</div>
+<div class="dock">
+<section class="preview" aria-label="وضع المدينة الآن">
+<h2>وضع المدينة الآن</h2>
+<div class="preview-row">
+<span>جودة المياه</span>
+<strong>{{ city.water }}</strong>
+<div class="track" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ city.water }}" aria-label="جودة المياه" data-meter data-from="0" data-to="{{ city.water }}"><span class="bar bar-water"></span></div>
+</div>
+<div class="preview-row">
+<span>جودة الهواء</span>
+<strong>{{ city.air }}</strong>
+<div class="track" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ city.air }}" aria-label="جودة الهواء" data-meter data-from="0" data-to="{{ city.air }}"><span class="bar bar-air"></span></div>
+</div>
+<div class="preview-row">
+<span>استدامة الطاقة</span>
+<strong>{{ city.energy }}</strong>
+<div class="track" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ city.energy }}" aria-label="استدامة الطاقة" data-meter data-from="0" data-to="{{ city.energy }}"><span class="bar bar-energy"></span></div>
+</div>
+<p class="preview-score">الاستدامة العامة <strong>{{ score }}</strong> من 100</p>
+</section>
+{% if nav_user %}
+<form class="launch" method="post" action="{{ url_for('start') }}">
+<input type="hidden" name="csrf" value="{{ csrf }}">
+{% if error %}<p class="form-error" role="alert">{{ error }}</p>{% endif %}
+<label for="leader">اسم قائدة المدينة</label>
+<input id="leader" name="leader" type="text" maxlength="40" autocomplete="name" value="{{ leader_default }}" autofocus>
+<button class="btn" type="submit">ابدئي مهمة الإنقاذ</button>
+</form>
+{% else %}
+<section class="launch">
+<p class="lede">سجّلي دخولك لحفظ المهام والتقارير على حسابك.</p>
+<a class="btn" href="{{ url_for('login') }}">دخول</a>
+<a class="btn btn-ghost" href="{{ url_for('register') }}">إنشاء حساب</a>
+</section>
+{% endif %}
+</div>
+</section>
+</main>
+{% endblock %}

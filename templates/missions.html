@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}مهامي | CHEM CITY 2050{% endblock %}
+{% block body %}
+{% include "topbar.html" %}
+<main id="main" class="wrap page-shell">
+<section class="verdict">
+<h1>مهام الإنقاذ</h1>
+<p class="lede">كل محاولة محفوظة على حسابك</p>
+<a class="btn btn-ghost" href="{{ url_for('account') }}">حسابي</a>
+<a class="btn" href="{{ url_for('home') }}">مهمة جديدة</a>
+</section>
+<section aria-label="قائمة المهام">
+{% if not runs %}
+<p class="muted">ما بدأتِ مهمة بعد.</p>
+{% else %}
+<ul class="mission-list">
+{% for run in runs %}
+<li>
+<div class="mission-head">
+<h2>{{ run.leader }}</h2>
+<p class="muted"><time datetime="{{ run.created_at }}">{{ run.created_at|ksa }}</time></p>
+</div>
+<p class="mission-meta">المرحلة {{ run.stage }} · {% if run.status == 'done' %}منتهية{% else %}قيد اللعب{% endif %} · الاستدامة {{ run.score }}</p>
+<div class="mission-actions">
+{% if run.status == 'play' %}
+<a class="btn btn-ghost" href="{{ url_for('play', sid=run.id) }}">متابعة</a>
+{% else %}
+<a class="btn btn-ghost" href="{{ url_for('report', sid=run.id) }}">التقرير</a>
+{% endif %}
+</div>
+</li>
+{% endfor %}
+</ul>
+{% endif %}
+</section>
+</main>
+{% endblock %}

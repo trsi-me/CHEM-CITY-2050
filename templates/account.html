@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% from "macros.html" import money, icon %}
+{% block title %}حسابي | CHEM CITY 2050{% endblock %}
+{% block body %}
+{% include "topbar.html" %}
+<main id="main" class="wrap page-shell">
+<section class="verdict">
+<p class="eyebrow">حسابي</p>
+<h1>{{ user.display_name }}</h1>
+<p class="muted">@{{ user.username }} · <time datetime="{{ user.created_at }}">عضو منذ {{ user.created_at|ksa }}</time></p>
+<a class="btn" href="{{ url_for('home') }}">العودة للرئيسية</a>
+</section>
+<section class="stats-grid" aria-label="إحصائيات الحساب">
+<article class="kpi kpi-score kpi-wide">
+<h2>إجمالي المهمات</h2>
+<p class="kpi-num">{{ stats.total }}</p>
+<p class="mission-meta">{{ stats.playing }} قيد اللعب · {{ stats.done }} منتهية</p>
+</article>
+<article class="kpi kpi-score">
+<h2>متوسط الاستدامة</h2>
+<p class="kpi-num">{{ stats.avg_score }}</p>
+<p class="mission-meta">من المهمات المكتملة</p>
+</article>
+<article class="kpi kpi-score">
+<h2>أفضل استدامة</h2>
+<p class="kpi-num">{{ stats.best_score }}</p>
+</article>
+<article class="kpi kpi-water">
+{{ icon("water") }}
+<h2>متوسط المياه</h2>
+<p class="kpi-num">{{ stats.avg_water }}</p>
+</article>
+<article class="kpi kpi-air">
+{{ icon("air") }}
+<h2>متوسط الهواء</h2>
+<p class="kpi-num">{{ stats.avg_air }}</p>
+</article>
+<article class="kpi kpi-energy">
+{{ icon("energy") }}
+<h2>متوسط الطاقة</h2>
+<p class="kpi-num">{{ stats.avg_energy }}</p>
+</article>
+<article class="kpi kpi-budget">
+<h2>الميزانية المستخدمة</h2>
+<p class="kpi-num">{{ money(stats.spent) }}</p>
+</article>
+<article class="kpi">
+<h2>أسئلة الكيمياء</h2>
+<p class="kpi-num">{{ stats.quiz_hits }}/{{ stats.quiz_total }}</p>
+<p class="mission-meta">إجابات صحيحة</p>
+</article>
+<article class="kpi kpi-wide">
+<h2>نتائج الإنقاذ</h2>
+<ul class="result-chips">
+<li class="chip-ok">أُنقذت {{ stats.saved }}</li>
+<li class="chip-warn">جزئي {{ stats.partial }}</li>
+<li class="chip-bad">انهيار {{ stats.collapse }}</li>
+</ul>
+</article>
+</section>
+<section>
+<h2>روابط سريعة</h2>
+<div class="actions">
+<a class="btn" href="{{ url_for('missions') }}">مهامي</a>
+<a class="btn btn-ghost" href="{{ url_for('home') }}">مهمة جديدة</a>
+</div>
+</section>
+</main>
+{% endblock %}

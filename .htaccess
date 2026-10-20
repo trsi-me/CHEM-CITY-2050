@@ -1,0 +1,6 @@
+<IfModule mod_authz_core.c>
+<FilesMatch "^\.env">
+Require all denied
+</FilesMatch>
+</IfModule>
+RedirectMatch 404 /\.git

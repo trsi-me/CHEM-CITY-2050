@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% from "macros.html" import money, icon %}
+{% block title %}لوحة المدينة | CHEM CITY 2050{% endblock %}
+{% block body %}
+{% include "topbar.html" %}
+<div class="subhead">
+<p class="leader">{{ city.leader }}</p>
+<ol class="steps" aria-label="مراحل الإنقاذ">
+{% for item in steps %}
+<li class="is-{{ item.state }}"{% if item.state == "now" %} aria-current="step"{% endif %}>{{ item.name }}</li>
+{% endfor %}
+</ol>
+</div>
+<main id="main" class="wrap">
+<section class="meters" aria-label="مؤشرات المدينة">
+<article class="kpi kpi-water">
+{{ icon("water") }}
+<h2>جودة المياه</h2>
+<p class="kpi-num">{{ city.water }}</p>
+<div class="track" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ city.water }}" aria-label="جودة المياه" data-meter data-from="{{ water_from }}" data-to="{{ city.water }}"><span class="bar bar-water"></span></div>
+</article>
+<article class="kpi kpi-air">
+{{ icon("air") }}
+<h2>جودة الهواء</h2>
+<p class="kpi-num">{{ city.air }}</p>
+<div class="track" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ city.air }}" aria-label="جودة الهواء" data-meter data-from="{{ air_from }}" data-to="{{ city.air }}"><span class="bar bar-air"></span></div>
+</article>
+<article class="kpi kpi-energy">
+{{ icon("energy") }}
+<h2>استدامة الطاقة</h2>
+<p class="kpi-num">{{ city.energy }}</p>
+<div class="track" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ city.energy }}" aria-label="استدامة الطاقة" data-meter data-from="{{ energy_from }}" data-to="{{ city.energy }}"><span class="bar bar-energy"></span></div>
+</article>
+<article class="kpi kpi-budget">
+<h2>ميزانية المدينة</h2>
+<p class="kpi-num">{{ money(city.budget) }}</p>
+<div class="track" role="meter" aria-valuemin="0" aria-valuemax="{{ city.start_budget }}" aria-valuenow="{{ city.budget }}" aria-label="ميزانية المدينة" data-meter data-max="{{ city.start_budget }}" data-from="{{ budget_from }}" data-to="{{ city.budget }}"><span class="bar bar-budget"></span></div>
+</article>
+<article class="kpi kpi-score">
+<h2>الاستدامة</h2>
+<div class="ring-wrap">
+<div class="ring" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ score }}" aria-label="مؤشر الاستدامة" data-ring data-from="{{ score_from }}" data-to="{{ score }}"></div>
+<p class="ring-num">{{ score }}</p>
+</div>
+</article>
+</section>
+<p class="pulse">{{ pulse }}</p>
+{% with messages = get_flashed_messages() %}
+{% if messages %}<p class="form-error" role="alert">{{ messages[0] }}</p>{% endif %}
+{% endwith %}
+{% if last %}
+<section id="sim" class="sim" aria-live="polite">
+<p class="eyebrow">نتيجة المحاكاة</p>
+<h2>{{ last.choice_title }}</h2>
+{% if last.equation %}<p class="eq" dir="ltr">{{ last.equation }}</p>{% endif %}
+<p>{{ last.explanation }}</p>
+<p class="quiz-note">{{ last.quiz_note }}</p>
+<ul class="deltas">
+<li><span>المياه</span><strong>{{ last.water_before }} → {{ last.water_after }}</strong></li>
+<li><span>الهواء</span><strong>{{ last.air_before }} → {{ last.air_after }}</strong></li>
+<li><span>الطاقة</span><strong>{{ last.energy_before }} → {{ last.energy_after }}</strong></li>
+<li><span>الميزانية</span><strong>{{ money(last.budget_before) }} → {{ money(last.budget_after) }}</strong></li>
+</ul>
+</section>
+{% endif %}
+<section class="crisis">
+<p class="eyebrow">المرحلة {{ city.stage }} من 3</p>
+<h1>{{ stage.title }}</h1>
+<p class="lede">{{ stage.lead }}</p>
+<dl class="facts">
+{% for fact in stage.facts %}
+<div>
+<dt>{{ fact.label }}</dt>
+<dd>{{ fact.value }}</dd>
+</div>
+{% endfor %}
+</dl>
+<form class="decision-form" method="post">
+<input type="hidden" name="csrf" value="{{ csrf }}">
+<input type="hidden" name="stage" value="{{ stage.id }}">
+<fieldset>
+<legend>سؤال المرحلة</legend>
+{% for opt in stage.options %}
+<label class="option">
+<input type="radio" name="quiz" value="{{ opt.id }}" required>
+<span>{{ opt.text }}</span>
+</label>
+{% endfor %}
+</fieldset>
+<fieldset>
+<legend>اختاري الحل</legend>
+{% for choice in stage.choices %}
+<label class="choice{% if not choice.ok %} is-locked{% endif %}">
+<input type="radio" name="choice" value="{{ choice.id }}"{% if choice.ok %} required{% endif %}{% if not choice.ok %} disabled{% endif %}>
+<span class="choice-copy">
+<span class="choice-top">
+<span class="choice-title">{{ choice.title }}</span>
+{{ money(choice.cost) }}
+</span>
+<span class="choice-text">{{ choice.text }}</span>
+{% if not choice.ok %}<span class="lock">الرصيد لا يكفي</span>{% endif %}
+</span>
+</label>
+{% endfor %}
+</fieldset>
+<button class="btn submit" type="submit">اعتمدي الحل</button>
+</form>
+</section>
+</main>
+{% endblock %}

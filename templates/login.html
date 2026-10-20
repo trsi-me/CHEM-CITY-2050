@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}دخول | CHEM CITY 2050{% endblock %}
+{% block body %}
+{% include "topbar.html" %}
+<main id="main" class="wrap wrap-simple">
+<section class="auth-card">
+<h1>دخول</h1>
+<p class="lede">اسم المستخدم أو البريد أو رقم الجوال</p>
+{% if error %}<p class="form-error" role="alert">{{ error }}</p>{% endif %}
+<form class="auth-form" method="post" action="{{ url_for('login') }}">
+<input type="hidden" name="csrf" value="{{ csrf }}">
+<label for="login_id">معرّف الدخول</label>
+<input id="login_id" name="login_id" type="text" required maxlength="80" autocomplete="username" autofocus>
+<label for="password">كلمة السر</label>
+<div class="pass-wrap">
+<input id="password" name="password" type="password" required minlength="8" maxlength="128" autocomplete="current-password">
+<button class="pass-toggle" type="button" data-pass-toggle aria-label="إظهار كلمة السر">إظهار</button>
+</div>
+<label class="check-row"><input type="checkbox" name="remember" value="1"> تذكرني</label>
+<button class="btn" type="submit">دخول</button>
+</form>
+<p class="muted">ما عندك حساب؟ <a href="{{ url_for('register') }}">إنشاء حساب</a></p>
+</section>
+</main>
+{% endblock %}
